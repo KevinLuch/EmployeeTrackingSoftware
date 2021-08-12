@@ -18,10 +18,10 @@
         <tbody>
             {% for employee in employees %}
             <tr>
-                <td>{{employee['first_name']}}</td>
-                <td>{{employee['last_name']}}</td>
-                <td>$ {{employee['salary']}}</td>
-                <td>{{employee['department_id']}}</td>
+                <td>{{employee.first_name}}</td>
+                <td>{{employee.last_name}}</td>
+                <td>$ {{employee.salary}}</td>
+                <td>{{employee.department_id}}</td>
             </tr>
             {% endfor %}
         </tbody>
