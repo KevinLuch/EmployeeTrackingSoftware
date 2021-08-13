@@ -6,17 +6,13 @@ from flask_app.models.employee import Employee
 
 @app.route('/')
 def index():
-    # connection = connectToMySQL('employee')
-    # employees = connection.query_db('SELECT * FROM employees;')
+    
     connection = connectToMySQL('employee')
     departments = connection.query_db('SELECT * FROM departments;')
     return render_template('index.html', employees = Employee.get_all_employees(), departments = departments)
 
 @app.route('/employees/create', methods=['POST'])
 def create_employee():
-    connection = connectToMySQL('employee')
-
-    query = "INSERT INTO employees (department_id, first_name, last_name, salary, created_at, updated_at) VALUES (%(department_id)s, %(first_name)s, %(last_name)s, %(salary)s, NOW(), NOW());"
     data = {
         'first_name': request.form['first_name'],
         'last_name': request.form['last_name'],
@@ -24,6 +20,34 @@ def create_employee():
         'department_id': request.form['department_id'],
     }
 
-    connection.query_db(query, data)
+    Employee.create_employee(data)
 
+    return redirect('/')
+
+@app.route('/delete/employee/<int:employee_id>')
+def delete_employee(employee_id):
+    data = {
+        "id": employee_id
+    }
+
+    Employee.destroy(data)
+
+    return redirect('/')
+
+@app.route('/edit/employee/<int:employee_id>')
+def edit_employee(employee_id):
+    data = {
+        "id": employee_id
+    }
+    return render_template('edit.html', edit_employee = Employee.get_by_id(data))
+
+@app.route('/update/employee', methods=['POST'])
+def update_employee():
+    data = {
+        "id": request.form['id'],
+        "first_name": request.form['first_name'],
+        "last_name": request.form['last_name'],
+        "salary": request.form['salary'],
+    }
+    Employee.update_employee(data)
     return redirect('/')
